@@ -17,13 +17,16 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.text.method.HideReturnsTransformationMethod;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -34,6 +37,10 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import static android.Manifest.permission.READ_PHONE_NUMBERS;
+import static android.Manifest.permission.READ_PHONE_STATE;
+import static android.Manifest.permission.READ_SMS;
 
 
 import com.android.volley.AuthFailureError;
@@ -68,6 +75,10 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.Manifest.permission.READ_PHONE_NUMBERS;
+import static android.Manifest.permission.READ_PHONE_STATE;
+import static android.Manifest.permission.READ_SMS;
+
 public class RegistroActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener{
 
     //OneSignal
@@ -84,6 +95,8 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
     String usuarioRegistro,emailRegistro,claveRegistro,fechaRegistro;
 
     String[] parts;
+
+
 
     //SQL
     ConexionSQLiteHelper conn;
@@ -143,7 +156,8 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
 
     private LocationManager locationManager;
 
-
+    //SMS
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -178,6 +192,31 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
         txtClave = (EditText) findViewById(R.id.txtClave);
 
         myDialog = new Dialog(this);
+
+
+        //SMS
+        try{
+
+            if (ActivityCompat.checkSelfPermission(this, READ_SMS) == PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(this, READ_PHONE_NUMBERS) ==
+                            PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                    READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                TelephonyManager tMgr = (TelephonyManager)   this.getSystemService(Context.TELEPHONY_SERVICE);
+                String mPhoneNumber = tMgr.getLine1Number();
+                Log.d("Numero celular",mPhoneNumber);
+                txtEmail.setText(mPhoneNumber);
+                return;
+            } else {
+                requestPermission();
+            }
+
+        }catch (Exception ex){
+            txtEmail.setText("No tiene SIM");
+        }
+
+        //SMS
+
+
 
        /*
         ArrayList<String> list;
@@ -568,6 +607,14 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
 
     }
 
+    //SMS
+    private void requestPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(new String[]{READ_SMS, READ_PHONE_NUMBERS, READ_PHONE_STATE}, 100);
+        }
+    }
+
+
     public void showDatePickerDialog(View v) {
 
 
@@ -606,7 +653,27 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
                     Toast.makeText(this, "Necesita Permiso de Cámara", Toast.LENGTH_LONG).show();
 
                 }
+                //SMS
+                try{
+
+                    TelephonyManager tMgr = (TelephonyManager)  this.getSystemService(Context.TELEPHONY_SERVICE);
+                    if (ActivityCompat.checkSelfPermission(this, READ_SMS) !=
+                            PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                            READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED  &&
+                            ActivityCompat.checkSelfPermission(this, READ_PHONE_STATE) !=      PackageManager.PERMISSION_GRANTED) {
+                        return;
+                    }
+                    String mPhoneNumber = tMgr.getLine1Number();
+                    Log.d("Numero de celular: ",mPhoneNumber);
+                    txtEmail.setText(mPhoneNumber);
+
+                }catch (Exception ex){
+                    txtEmail.setText("No tiene SIM");
+                }
+
+
                 break;
+
         }
 
 
