@@ -1,0 +1,119 @@
+{
+  "project_info": {
+    "project_number": "423029089632",
+    "firebase_url": "https://latinus-bank.firebaseio.com",
+    "project_id": "latinus-bank",
+    "storage_bucket": "latinus-bank.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:423029089632:android:cc7c67109efa0658",
+        "android_client_info": {
+          "package_name": "net.latinus.example"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "423029089632-srbu7h491ue4vbgr5iagi72jtl71haic.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAocRfJXGQ0f-FPQZ8n268bIn4s-_rveOU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "423029089632-srbu7h491ue4vbgr5iagi72jtl71haic.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "423029089632-7r2pa7e194thvigljvqt9nqvctbbqd81.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "net.latinus.EdgeSoft"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:423029089632:android:ec7a35acdbc49391",
+        "android_client_info": {
+          "package_name": "net.latinus.inappprueba"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "423029089632-srbu7h491ue4vbgr5iagi72jtl71haic.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAocRfJXGQ0f-FPQZ8n268bIn4s-_rveOU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "423029089632-srbu7h491ue4vbgr5iagi72jtl71haic.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "423029089632-7r2pa7e194thvigljvqt9nqvctbbqd81.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "net.latinus.EdgeSoft"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:423029089632:android:12a368a091088147",
+        "android_client_info": {
+          "package_name": "net.latinus.pushapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "423029089632-srbu7h491ue4vbgr5iagi72jtl71haic.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAocRfJXGQ0f-FPQZ8n268bIn4s-_rveOU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "423029089632-srbu7h491ue4vbgr5iagi72jtl71haic.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "423029089632-7r2pa7e194thvigljvqt9nqvctbbqd81.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "net.latinus.EdgeSoft"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

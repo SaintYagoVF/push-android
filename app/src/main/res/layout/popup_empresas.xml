@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="350dp"
+    android:layout_height="475dp"
+
+    android:layout_gravity="center"
+    android:background="@color/fondo"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="LISTA DE EMPRESAS"
+            android:textAlignment="center"
+            android:textColor="@color/negro"
+            android:textSize="30sp" />
+
+        <EditText
+            android:id="@+id/filtroEmpresas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:ems="10"
+            android:hint="Buscar..."
+            android:inputType="textPersonName"
+            android:textColor="@color/negro"
+            android:textColorHint="@color/negro" />
+
+        <ListView
+            android:id="@+id/listViewTodasEmpresas"
+            android:layout_width="fill_parent"
+            android:layout_height="250dp"
+            android:layout_marginTop="25dp"
+            android:textColor="@color/colorPrimaryDark" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnPopupEmpCancelar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:clickable="true"
+            android:text="CANCELAR" />
+
+    </LinearLayout>
+</LinearLayout>

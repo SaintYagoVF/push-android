@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".DetalleBandejaActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:scrollbars="none">
+
+
+        <TableLayout
+            android:id="@+id/tableLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:isScrollContainer="true"
+            android:padding="10dip">
+
+            <TableRow
+                android:id="@+id/tableR8"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp">
+
+                <ImageView
+                    android:id="@+id/imageViewPush2"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ico_push_final"
+                    app:srcCompat="@drawable/ico_push_final"
+                    tools:srcCompat="@drawable/ico_push_final" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/TableRFecha"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textFecha"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="TextView"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/negro"
+                    android:textSize="12sp"
+                    android:textStyle="italic" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tableR1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/textTitulo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="TextView"
+                    android:textAlignment="center"
+                    android:textColor="@color/negro"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tableR2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp">
+
+                <ImageView
+                    android:id="@+id/imageViewPush"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_weight="1" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tableRImagen"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/textContenido"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="TextView"
+                    android:textAlignment="center"
+                    android:textColor="@color/negro"
+                    android:textSize="14sp" />
+            </TableRow>
+
+
+            <TableRow
+                android:id="@+id/tableData"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textData"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="TextView"
+                    android:textAlignment="center"
+                    android:textColor="@color/negro"
+                    android:textSize="18sp"
+                    android:textStyle="italic" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tableRURL"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textUrl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="1"
+                    android:autoLink="web"
+                    android:text="TextView"
+                    android:textAlignment="center"
+                    android:textAllCaps="false"
+                    android:textColor="@color/design_default_color_primary_dark"
+                    android:textSize="14sp" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tableRGuardar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <Button
+                    android:id="@+id/btnGuardarBandeja"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="25dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimary"
+                    android:text="GUARDAR NOTIFICACIÓN"
+                    android:textSize="18sp" />
+            </TableRow>
+
+
+        </TableLayout>
+    </ScrollView>
+
+</LinearLayout>
