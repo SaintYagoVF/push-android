@@ -31,6 +31,8 @@ import com.onesignal.OneSignal;
 
 import net.latinus.pushapp.Utilidades.ServiciosHttp;
 
+import java.util.ArrayList;
+
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener{
 
 
@@ -45,6 +47,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     //ProgressDialog
     private ProgressDialog pDialog;
+
+    //Empresas
+    ArrayList<Integer> listaIdEmpresas;
 
 
     //GPS
@@ -69,6 +74,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+
+        //Empresas
+        listaIdEmpresas=new ArrayList<Integer>();
 
         //GPS
 
@@ -179,7 +187,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                         try {
 
-                            ServiciosHttp.loginUsuarioAPI(getApplicationContext(), txtEmail.getText().toString().trim(), txtClave.getText().toString(), oneSignalToken, Latitud, Longitud, txtEmail.getText().toString().trim(), LoginActivity.this);
+                            ServiciosHttp.loginUsuarioAPI(getApplicationContext(), txtEmail.getText().toString().trim(), txtClave.getText().toString(), oneSignalToken, Latitud, Longitud, txtEmail.getText().toString().trim(),listaIdEmpresas, LoginActivity.this);
 
                         } catch (Exception ex) {
 

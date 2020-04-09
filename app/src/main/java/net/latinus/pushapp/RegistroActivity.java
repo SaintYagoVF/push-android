@@ -78,6 +78,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -94,9 +95,11 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
     public static final String Token = "tokenKey";
 
 
-    String usuarioRegistro,emailRegistro,claveRegistro,fechaRegistro;
+    String usuarioRegistro,emailRegistro,claveRegistro,fechaRegistro, telefonoRegistro;
 
     String[] parts;
+
+
 
 
 
@@ -163,6 +166,7 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
     private double Latitud=0.0;
     private double Longitud=0.0;
 
+
     private LocationManager locationManager;
 
     //SMS
@@ -171,6 +175,9 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
+
+        //Empresas
+        listaIdEmpresas=new ArrayList<Integer>();
 
         //SQL
         conn = new ConexionSQLiteHelper(getApplicationContext(), "bd_usuarios", null, 1);
@@ -215,15 +222,18 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
                     READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
                 TelephonyManager tMgr = (TelephonyManager)   this.getSystemService(Context.TELEPHONY_SERVICE);
                 String mPhoneNumber = tMgr.getLine1Number();
-                Log.d("Numero celular",mPhoneNumber);
-                txtEmail.setText(mPhoneNumber);
+                //Log.d("Numero celular",mPhoneNumber);
+                //txtEmail.setText(mPhoneNumber);
+                telefonoRegistro=mPhoneNumber;
                 return;
             } else {
                 requestPermission();
+                telefonoRegistro="";
             }
 
         }catch (Exception ex){
-            txtEmail.setText("No tiene SIM");
+            //txtEmail.setText("No tiene SIM");
+            telefonoRegistro="No SIM";
         }
 
 
@@ -445,7 +455,7 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
                 Button btnAceptarPopupEmp;
                 ImageButton btnCancelarPopupEmp;
                 myDialog.setContentView(R.layout.popup_empresas);
-                listaIdEmpresas=new ArrayList<Integer>();
+
 
                 filtroEmpresas = (EditText)myDialog.findViewById(R.id.filtroEmpresas);
 
@@ -541,7 +551,7 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
 
 
 
-                                    //registroServiciosPostgres();
+                                    registroServiciosPostgres(listaIdEmpresas);
 
 
 
@@ -653,8 +663,8 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
 
     }
 
-    private void registroBase(String result){
-        String empresa2="";
+    private void registroBase(){
+     /*   String empresa2="";
         String app2;
         Integer idempresa2=1;
 
@@ -679,6 +689,7 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
 
         }
 
+*/
         try {
 
 
@@ -696,6 +707,7 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
             e.printStackTrace();
         }
 
+        /*
         try {
 
 
@@ -730,7 +742,7 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
             e.printStackTrace();
         }
 
-        /*
+
 
         SQLiteDatabase db = conn.getWritableDatabase();
 
@@ -808,10 +820,12 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
                     }
                     String mPhoneNumber = tMgr.getLine1Number();
                     Log.d("Numero de celular: ",mPhoneNumber);
-                    txtEmail.setText(mPhoneNumber);
+                    //txtEmail.setText(mPhoneNumber);
+                    telefonoRegistro=mPhoneNumber;
 
                 }catch (Exception ex){
-                    txtEmail.setText("No tiene SIM");
+                    //txtEmail.setText("No tiene SIM");
+                    telefonoRegistro="No tiene SIM";
                 }
 
 
@@ -881,6 +895,7 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
                 }
                 if(parts[i].contains("idEmpresa=")){
                     nombreApp=Integer.parseInt(parts[i].substring(10));
+                    listaIdEmpresas.add(nombreApp);
                 }
             }
 
@@ -911,7 +926,7 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
 
                 else {
 
-                   registroServiciosPostgres();
+                   registroServiciosPostgres(listaIdEmpresas);
                 }
 
 
@@ -954,7 +969,7 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
 
     }
 
-    public void registroServiciosPostgres(){
+    public void registroServiciosPostgres(ArrayList<Integer> listaEmpresas){
 
         pDialog.setMessage("Por favor, espere....");
         pDialog.setTitle("Registrando");
@@ -967,16 +982,16 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
 
 
 
-        if(ServiciosHttp.registrarUsuarioAPI(getApplicationContext(),usuarioRegistro,emailRegistro,fechaRegistro,claveRegistro)==true)
+        if(ServiciosHttp.registrarUsuarioAPI(getApplicationContext(),usuarioRegistro,emailRegistro,fechaRegistro,claveRegistro, telefonoRegistro)==true)
         {
 
             Log.d("APILoginTokenRecibido:","Registro Correcto");
 
 
             try {
-                ServiciosHttp.loginUsuarioAPI(getApplicationContext(), emailRegistro, claveRegistro, oneSignalToken, Latitud, Longitud, usuarioRegistro, RegistroActivity.this);
+                ServiciosHttp.loginUsuarioAPI(getApplicationContext(), emailRegistro, claveRegistro, oneSignalToken, Latitud, Longitud, usuarioRegistro,listaEmpresas, RegistroActivity.this);
                 nuevoUsuario();
-                //registroBase(result);
+                registroBase();
             }
             catch (Exception ex){
                 hideDialog();
@@ -1152,7 +1167,7 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
 
                             dr2.child("/tokenOneSignal").setValue(oneSignalToken);
                             nuevoUsuario();
-                            registroBase(result);
+                            registroBase();
 
                             SharedPreferences.Editor editor = sharedpreferences.edit();
 

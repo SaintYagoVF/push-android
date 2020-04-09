@@ -31,6 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -129,7 +130,7 @@ public class ServiciosHttp {
     }
 
 
-    public static boolean registrarUsuarioAPI(final Context context, String usuarioRegistro, String emailRegistro, String fechaRegistro, String claveRegistro){
+    public static boolean registrarUsuarioAPI(final Context context, String usuarioRegistro, String emailRegistro, String fechaRegistro, String claveRegistro, String telefonoRegistro){
 
 
 
@@ -151,6 +152,7 @@ public class ServiciosHttp {
         postParam.put("fechaNacimiento",fechaRegistro);
         postParam.put("role",rol);
         postParam.put("password",claveRegistro);
+        postParam.put("telefono",telefonoRegistro);
 
 
 
@@ -246,7 +248,7 @@ public class ServiciosHttp {
 
 
 
-    public static void loginUsuarioAPI(final Context context, String emailRegistro, String claveRegistro, final String oneSignalToken, final Double latitud, final Double longitud, final String usuarioRegistro, final Activity activity){
+    public static void loginUsuarioAPI(final Context context, String emailRegistro, String claveRegistro, final String oneSignalToken, final Double latitud, final Double longitud, final String usuarioRegistro, final ArrayList<Integer> listaEmpresas, final Activity activity){
 
         // Progress dialog
         pDialog = new ProgressDialog(context);
@@ -315,7 +317,7 @@ public class ServiciosHttp {
 
                                     Log.d("tokenes","Token Guardado");
 
-                                    crearTokenAPI(context,oneSignalToken,latitud,longitud,usuarioRegistro,activity);
+                                    crearTokenAPI(context,oneSignalToken,latitud,longitud,usuarioRegistro,listaEmpresas,activity);
 
 
 
@@ -397,7 +399,7 @@ public class ServiciosHttp {
 
 
 
-    public static void crearTokenAPI(final Context context, final String oneSignalToken, final Double latitud, final Double longitud, final String usuarioRegistro, final Activity activity){
+    public static void crearTokenAPI(final Context context, final String oneSignalToken, final Double latitud, final Double longitud, final String usuarioRegistro, final ArrayList<Integer> listaEmpresas, final Activity activity){
 
 
 
@@ -442,7 +444,7 @@ public class ServiciosHttp {
                             if(status==true) {
 
 
-                               crearUbicacionAPI(context,token,latitud,longitud,usuarioRegistro,oneSignalToken,activity);
+                               crearUbicacionAPI(context,token,latitud,longitud,usuarioRegistro,oneSignalToken,listaEmpresas,activity);
 
 
                             }
@@ -507,7 +509,7 @@ public class ServiciosHttp {
     }
 
 
-    public static void crearUbicacionAPI(final Context context, final String token, final Double latitud, final Double longitud, final String usuarioRegistro, final String oneSignalTok, final Activity activity){
+    public static void crearUbicacionAPI(final Context context, final String token, final Double latitud, final Double longitud, final String usuarioRegistro, final String oneSignalTok,final ArrayList<Integer> listaEmpresas, final Activity activity){
 
 
 
@@ -553,13 +555,13 @@ public class ServiciosHttp {
 
                                     pushBienvenida(context,oneSignalTok,usuarioRegistro);
 
-                                    crearEmpresaAPI(context,token,activity);
+                                    crearEmpresaAPI(context,token,listaEmpresas,activity);
 
                                 }else{
 
                                     pushBienvenida(context,oneSignalTok,usuarioRegistro);
 
-                                    obtenerEmpresaAPI(context,token,activity);
+                                    obtenerEmpresaAPI(context,token, activity);
 
                                   /*  Toast.makeText(context, "¡Acceso Exitoso!", Toast.LENGTH_LONG).show();
                                     activity.finish();
@@ -637,15 +639,21 @@ public class ServiciosHttp {
     }
 
 
-    public static void crearEmpresaAPI(final Context context, final String token, final Activity activity){
+    public static void crearEmpresaAPI(final Context context, final String token,final ArrayList<Integer> listaEmpresas, final Activity activity){
 
 
+        for(int i=0; i<listaEmpresas.size();i++){
 
 
         String url = "http://192.168.100.25:8080/api/movil/subscribirEmpresa";
 
         RequestQueue queue = Volley.newRequestQueue(context);
-        Integer idEmpresa=sharedpreferences.getInt(IdEmpresa,0);
+        //Integer idEmpresa=sharedpreferences.getInt(IdEmpresa,0);
+
+
+
+
+        Integer idEmpresa=listaEmpresas.get(i);
 
         Map<String, Object> postParam= new HashMap<String, Object>();
 
@@ -798,10 +806,12 @@ public class ServiciosHttp {
         jsonObjReq.setTag(TAG);
         queue.add(jsonObjReq);
 
+
+    }
     }
 
 
-    public static void nuevaEmpresaAPI(final Context context, final String token, final Activity activity, final Integer idEmpresa){
+    public static void nuevaEmpresaAPI(final Context context, final String token, final Activity activity,  final Integer idEmpresa){
 
 
 
