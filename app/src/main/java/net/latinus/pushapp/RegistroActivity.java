@@ -12,7 +12,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
@@ -27,13 +29,18 @@ import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,12 +50,10 @@ import static android.Manifest.permission.READ_PHONE_STATE;
 import static android.Manifest.permission.READ_SMS;
 
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.blikoon.qrcodescanner.QrCodeActivity;
@@ -65,19 +70,16 @@ import com.google.firebase.database.ValueEventListener;
 import com.onesignal.OSPermissionSubscriptionState;
 import com.onesignal.OneSignal;
 
-import net.latinus.pushapp.Utilidades.Utilidades;
+import net.latinus.pushapp.Entidades.Empresas;
 import net.latinus.pushapp.Utilidades.ServiciosHttp;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-
-import static android.Manifest.permission.READ_PHONE_NUMBERS;
-import static android.Manifest.permission.READ_PHONE_STATE;
-import static android.Manifest.permission.READ_SMS;
 
 public class RegistroActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener{
 
@@ -101,7 +103,8 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
     //SQL
     ConexionSQLiteHelper conn;
 
-
+    //Volley
+    private RequestQueue mQueue;
 
     ConnectivityDetector connectivityDetector;
 
@@ -123,6 +126,12 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
     Dialog myDialog;
     ListView listViewEmpresas;
     EditText filtroEmpresas;
+
+    ArrayList<String> listaInformacion;
+    ArrayList<Empresas> listaEmpresas;
+    ArrayList<Integer> listaIdEmpresas;
+
+    private ArrayAdapter adaptador;
 
     //SharedPreference
     public static final String MyPREFERENCES = "MyPrefs" ;
@@ -194,6 +203,9 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
         myDialog = new Dialog(this);
 
 
+        // Volley
+        mQueue = Volley.newRequestQueue(this);
+
         //SMS
         try{
 
@@ -214,7 +226,7 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
             txtEmail.setText("No tiene SIM");
         }
 
-        //SMS
+
 
 
 
@@ -422,32 +434,163 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
             public void onClick(View view) {
 
 
+                usuarioRegistro = txtUsuario.getText().toString();
+                emailRegistro = txtEmail.getText().toString().trim();
+                claveRegistro = txtClave.getText().toString();
+                fechaRegistro = btnFecha.getText().toString().trim();
+
                 Toast.makeText(RegistroActivity.this, "Empresas Registradas", Toast.LENGTH_SHORT).show();
 
 
-
-
-                Button btnCancelar2;
+                Button btnAceptarPopupEmp;
+                ImageButton btnCancelarPopupEmp;
                 myDialog.setContentView(R.layout.popup_empresas);
-
+                listaIdEmpresas=new ArrayList<Integer>();
 
                 filtroEmpresas = (EditText)myDialog.findViewById(R.id.filtroEmpresas);
 
 
-                btnCancelar2 = (Button)myDialog.findViewById(R.id.btnPopupEmpCancelar);
+                btnAceptarPopupEmp = (Button)myDialog.findViewById(R.id.btnPopupEmpAceptar);
+                btnCancelarPopupEmp = (ImageButton)myDialog.findViewById(R.id.btnPopupEmpCancelar);
 
                 listViewEmpresas= (ListView)myDialog.findViewById(R.id.listViewTodasEmpresas);
 
+                sincronizarEmpresas();
+
+
+                listViewEmpresas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
+
+                        Object o = listViewEmpresas.getItemAtPosition(pos);
+
+                        String nombr = (String)o;
+
+                        // Set the item as checked to be highlighted
+                        if(listViewEmpresas.isItemChecked(pos)){
+                            listViewEmpresas.setItemChecked(pos, true);
+                            view.setBackgroundColor(Color.DKGRAY);
+                            adaptador.notifyDataSetChanged();
+
+
+                        /*
+                            for (int i = 0; i < listaEmpresas.size(); i++) {
+                                if (listaEmpresas.get(i).getNombreEmpresa().equals(nombr)) {
+
+                                   // Log.d("Click ListView: ",listaEmpresas.get(i).getNombreEmpresa()) ;
+                                   // Log.d("Click ListView Id: ", listaEmpresas.get(i).getId_tabEmpresa().toString());
+                                    listaIdEmpresas.add(listaEmpresas.get(i).getId_tabEmpresa());
+
+
+                                }
+                            }
+                            */
+
+
+                        }else{
+                            listViewEmpresas.setItemChecked(pos, false);
+                            view.setBackgroundColor(Color.TRANSPARENT);
+                            adaptador.notifyDataSetChanged();
+
+
+                        }
+
+                        /*for (int i = 0; i < listaIdEmpresas.size(); i++) {
+                            Log.d("Click Listview total: ",listaIdEmpresas.get(i).toString());
+                        }
+                        */
+
+                        //
+
+
+
+                    }
+                });
+
+
+                btnAceptarPopupEmp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                       // myDialog.dismiss();
+
+                       // loginFirebase("Empresa");
+
+
+
+
+                        for(int i=0;i<listViewEmpresas.getAdapter().getCount();i++){
+                            Object o = listViewEmpresas.getItemAtPosition(i);
+
+                            String nombr = (String)o;
+                            if(listViewEmpresas.isItemChecked(i)){
+                                if (listaEmpresas.get(i).getNombreEmpresa().equals(nombr)) {
+
+                                    // Log.d("Click ListView: ",listaEmpresas.get(i).getNombreEmpresa()) ;
+                                    // Log.d("Click ListView Id: ", listaEmpresas.get(i).getId_tabEmpresa().toString());
+                                    listaIdEmpresas.add(listaEmpresas.get(i).getId_tabEmpresa());
+
+
+                                }
+
+
+                            }
+                        }
+                        for(int i=0;i<listaIdEmpresas.size();i++)
+                            Log.d("Click Listview total: ",listaIdEmpresas.get(i).toString());
+
+
+
+
+                                    //registroServiciosPostgres();
+
+
+
+                    }
+                });
+
+                btnCancelarPopupEmp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        myDialog.dismiss();
+                    }
+                });
+
+                filtroEmpresas.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                        (RegistroActivity.this).adaptador.getFilter().filter(s);
+
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
+                    }
+                });
 
                 myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 myDialog.show();
 
-                btnCancelar2.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        myDialog.dismiss();
-                    }
-                });
+
+                if (!connectivityDetector.checkConnectivityStatus() ) {
+                myDialog.dismiss();
+
+                    Toast.makeText(RegistroActivity.this, "Necesita acceso a internet", Toast.LENGTH_LONG).show();
+                }
+
+
+                if (usuarioRegistro.isEmpty() || emailRegistro.isEmpty() || claveRegistro.isEmpty() || fechaRegistro.isEmpty() || claveRegistro.length() < 6) {
+                    myDialog.dismiss();
+                    Toast.makeText(RegistroActivity.this, "Llene todos los campos, la clave debe contener almenos 6 dígitos", Toast.LENGTH_LONG).show();
+
+                }
             }
         });
 
@@ -768,56 +911,7 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
 
                 else {
 
-                    pDialog.setMessage("Por favor, espere....");
-                    pDialog.setTitle("Registrando");
-
-
-                    pDialog.setCancelable(true);
-                    showDialog();
-
-
-
-
-                    /*
-                  if(ServiciosHttp.registrarUsuarioAPI(getApplicationContext(),usuarioRegistro,emailRegistro,fechaRegistro,claveRegistro)==true)
-                  {
-
-                      Log.d("APILoginTokenRecibido:","Registro Correcto");
-
-
-                      try {
-                          ServiciosHttp.loginUsuarioAPI(getApplicationContext(), emailRegistro, claveRegistro, oneSignalToken, Latitud, Longitud, usuarioRegistro, RegistroActivity.this);
-                          nuevoUsuario();
-                          registroBase(result);
-                      }
-                      catch (Exception ex){
-                          hideDialog();
-                      }
-
-
-                  }
-
-
-                  else{
-                      hideDialog();
-                  }
-
-                */
-
-                    loginFirebase(result);
-
-                /*
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            // Do something after 3s = 3000ms
-                            hideDialog();
-
-                        }
-                    }, 3000);
-                    */
-
+                   registroServiciosPostgres();
                 }
 
 
@@ -860,6 +954,153 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
 
     }
 
+    public void registroServiciosPostgres(){
+
+        pDialog.setMessage("Por favor, espere....");
+        pDialog.setTitle("Registrando");
+
+
+        pDialog.setCancelable(true);
+        showDialog();
+
+
+
+
+
+        if(ServiciosHttp.registrarUsuarioAPI(getApplicationContext(),usuarioRegistro,emailRegistro,fechaRegistro,claveRegistro)==true)
+        {
+
+            Log.d("APILoginTokenRecibido:","Registro Correcto");
+
+
+            try {
+                ServiciosHttp.loginUsuarioAPI(getApplicationContext(), emailRegistro, claveRegistro, oneSignalToken, Latitud, Longitud, usuarioRegistro, RegistroActivity.this);
+                nuevoUsuario();
+                //registroBase(result);
+            }
+            catch (Exception ex){
+                hideDialog();
+            }
+
+
+        }
+
+
+        else{
+            hideDialog();
+        }
+
+
+
+        // loginFirebase(result);
+
+
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Do something after 3s = 3000ms
+                hideDialog();
+
+            }
+        }, 3000);
+
+
+    }
+
+    public void sincronizarEmpresas(){
+
+
+
+
+        String url = "http://192.168.100.25:8080/api/movil/obtenerTodasLasEmpresas";
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+
+
+                try {
+
+
+                        JSONArray jsonArray = response.getJSONArray("empresaRespuesta");
+
+                        if (jsonArray.length()==0){
+                            Toast.makeText(getApplicationContext(), "No hay empresas vinculadas actualmente", Toast.LENGTH_SHORT).show();
+                        }else {
+
+                            Empresas usuario = null;
+                            listaEmpresas = new ArrayList<Empresas>();
+
+                            for (int i = 0; i < jsonArray.length(); i++) {
+
+                                JSONObject general = jsonArray.getJSONObject(i);
+
+                                String idEmpr = general.getString("id");
+
+                                Log.d("Empresa id:",idEmpr);
+
+                                String nombreEmpr = general.getString("nombre");
+
+                                Log.d("Empresa nombre:",nombreEmpr);
+
+                                String imagenEmpr = general.getString("imagen");
+
+                                Log.d("Empresa Imagen:",imagenEmpr);
+
+
+                                usuario = new Empresas();
+                                usuario.setId_tabEmpresa(Integer.parseInt(idEmpr));
+                                usuario.setNombreEmpresa(nombreEmpr);
+                                usuario.setLogoEmpresa(imagenEmpr);
+
+                                listaEmpresas.add(usuario);
+
+                            }
+
+                            listaInformacion=new ArrayList<String>();
+
+                            for (int i=0; i<listaEmpresas.size();i++){
+                                listaInformacion.add(listaEmpresas.get(i).getNombreEmpresa());
+
+                            }
+
+
+                            adaptador=new ArrayAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,listaInformacion);
+                            listViewEmpresas.setAdapter(adaptador);
+
+
+
+                        }
+
+
+
+
+
+
+                         //Toast.makeText(getApplicationContext(), "Sincronización Correcta", Toast.LENGTH_SHORT).show();
+
+
+
+
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+
+        mQueue.add(request);
+    }
+
     private void loginFirebase(final String result) {
 
         connectivityDetector = new ConnectivityDetector(getBaseContext());
@@ -897,9 +1138,9 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
 
                 final DatabaseReference dr1 = db.getReference("identities");
 
-                final DatabaseReference dr2 = db.getReference("identities/juan/"+usuarioRegistro);
+                final DatabaseReference dr2 = db.getReference("identities/juan/"+txtUsuario.getText().toString());
 
-                dr1.child("/juan/"+usuarioRegistro).addListenerForSingleValueEvent(new ValueEventListener() {
+                dr1.child("/juan/"+txtUsuario.getText().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if(dataSnapshot.exists()){
@@ -924,6 +1165,7 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
 
                             //finish();
                             //ServiciosHttp.pushBienvenida();
+                            ServiciosHttp.pushBienvenida(getApplicationContext(),oneSignalToken,txtUsuario.getText().toString());
 
                             startActivity(new Intent(RegistroActivity.this, MainActivity.class));
 
@@ -951,6 +1193,9 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
 
 
     }
+
+
+
 
     //Progress Dialog
     //Show Dialog

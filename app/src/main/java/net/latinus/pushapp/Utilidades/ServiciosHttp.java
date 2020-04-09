@@ -30,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -133,7 +134,7 @@ public class ServiciosHttp {
 
 
 
-        String url = "http://192.168.0.241:8080/api/auth/registrar";
+        String url = "http://192.168.100.25:8080/api/auth/registrar";
 
         String[] rol = {"ROLE_MOVIL_PUSH"};
 
@@ -254,7 +255,7 @@ public class ServiciosHttp {
 
         final String[] token = {""};
 
-        String url = "http://192.168.0.241:8080/api/auth/login";
+        String url = "http://192.168.100.25:8080/api/auth/login";
 
 
 
@@ -365,6 +366,8 @@ public class ServiciosHttp {
 
                 VolleyLog.d(TAG, "ErrorPush: " + error.getMessage());
 
+                //Log.d("ErrorPush:  ",error.getMessage());
+
 
 
              Toast.makeText(context,"Nombre de Usuario o contraseña inválidos",  Toast.LENGTH_LONG).show();
@@ -399,7 +402,7 @@ public class ServiciosHttp {
 
 
 
-        String url = "http://192.168.0.241:8080/api/movil/actualizarTokenOneSignal";
+        String url = "http://192.168.100.25:8080/api/movil/actualizarTokenOneSignal";
 
 
 
@@ -509,7 +512,7 @@ public class ServiciosHttp {
 
 
 
-        String url = "http://192.168.0.241:8080/api/movil/agregarUbicacionMovil";
+        String url = "http://192.168.100.25:8080/api/movil/agregarUbicacionMovil";
 
         RequestQueue queue = Volley.newRequestQueue(context);
 
@@ -639,7 +642,7 @@ public class ServiciosHttp {
 
 
 
-        String url = "http://192.168.0.241:8080/api/movil/subscribirEmpresa";
+        String url = "http://192.168.100.25:8080/api/movil/subscribirEmpresa";
 
         RequestQueue queue = Volley.newRequestQueue(context);
         Integer idEmpresa=sharedpreferences.getInt(IdEmpresa,0);
@@ -797,12 +800,13 @@ public class ServiciosHttp {
 
     }
 
+
     public static void nuevaEmpresaAPI(final Context context, final String token, final Activity activity, final Integer idEmpresa){
 
 
 
 
-        String url = "http://192.168.0.241:8080/api/movil/subscribirEmpresa";
+        String url = "http://192.168.100.25:8080/api/movil/subscribirEmpresa";
 
         RequestQueue queue = Volley.newRequestQueue(context);
 
@@ -962,12 +966,13 @@ public class ServiciosHttp {
 
 
 
+
     public static void obtenerEmpresaAPI(final Context context, final String token, final Activity activity){
 
 
 
 
-        String url = "http://192.168.0.241:8080/api/movil/obtenerEmpresas";
+        String url = "http://192.168.100.25:8080/api/movil/obtenerEmpresas";
 
         RequestQueue queue = Volley.newRequestQueue(context);
 
@@ -1079,7 +1084,7 @@ public class ServiciosHttp {
 
 
 
-        String url = "http://192.168.0.241:8080/api/movil/desvincularEmpresa";
+        String url = "http://192.168.100.25:8080/api/movil/desvincularEmpresa";
 
         RequestQueue queue = Volley.newRequestQueue(context);
 

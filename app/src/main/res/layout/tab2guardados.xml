@@ -19,7 +19,8 @@
         android:text="Mensajes Guardados en Dispositivo"
         android:textAlignment="center"
         android:textColor="@color/negro"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:visibility="invisible" />
 
     <ListView
         android:id="@+id/guardadoListView"
