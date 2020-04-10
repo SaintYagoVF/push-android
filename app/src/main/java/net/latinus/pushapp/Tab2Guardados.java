@@ -191,13 +191,18 @@ public class Tab2Guardados extends Fragment {
                 usuario.setImagenGuardado(cursor.getString(5));
                 usuario.setUrlGuardado(cursor.getString(6));
 
+                try{
+                    Log.d("Título Push:", usuario.getTituloGuardado());
+                    Log.d("Contenido Push:", usuario.getContenidoGuardado());
+                    Log.d("Fecha Push:", usuario.getFechaGuardado());
+                    Log.d("Data Push:", usuario.getDataGuardado());
+                    Log.d("ImagenPush:", usuario.getImagenGuardado());
+                    Log.d("UrlPush:", usuario.getUrlGuardado());
+                }
+                catch(Exception ex){
 
-                Log.d("Título Push:", usuario.getTituloGuardado());
-                Log.d("Contenido Push:", usuario.getContenidoGuardado());
-                Log.d("Fecha Push:", usuario.getFechaGuardado());
-                Log.d("Data Push:", usuario.getDataGuardado());
-                Log.d("ImagenPush:", usuario.getImagenGuardado());
-                Log.d("UrlPush:", usuario.getUrlGuardado());
+                }
+
 
 
 

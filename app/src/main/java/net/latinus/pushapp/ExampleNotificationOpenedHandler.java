@@ -84,7 +84,7 @@ public class ExampleNotificationOpenedHandler extends AppCompatActivity implemen
         }
 
 
-
+        /*
       try {
 
 
@@ -137,6 +137,7 @@ public class ExampleNotificationOpenedHandler extends AppCompatActivity implemen
 
 
         }
+      */
 
 
         if (actionType == OSNotificationAction.ActionType.ActionTaken) {

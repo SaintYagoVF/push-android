@@ -48,12 +48,15 @@ import android.widget.Toast;
 import static android.Manifest.permission.READ_PHONE_NUMBERS;
 import static android.Manifest.permission.READ_PHONE_STATE;
 import static android.Manifest.permission.READ_SMS;
+import static com.android.volley.VolleyLog.TAG;
 
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.blikoon.qrcodescanner.QrCodeActivity;
@@ -81,6 +84,8 @@ import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegistroActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener{
 
@@ -176,6 +181,20 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
 
+
+
+        //OneSignal
+
+
+        // OneSignal Initialization
+        OneSignal.startInit(this)
+                .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
+                .unsubscribeWhenNotificationsAreDisabled(true)
+                .setNotificationOpenedHandler(new ExampleNotificationOpenedHandler(getApplicationContext()))
+                .setNotificationReceivedHandler(new ExampleNotificationReceivedHandler())
+                .init();
+
+
         //Empresas
         listaIdEmpresas=new ArrayList<Integer>();
 
@@ -266,16 +285,6 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
         pDialog.setCancelable(false);
 
 
-        //OneSignal
-
-
-        // OneSignal Initialization
-        OneSignal.startInit(this)
-                .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
-                .unsubscribeWhenNotificationsAreDisabled(true)
-                .setNotificationOpenedHandler(new ExampleNotificationOpenedHandler(getApplicationContext()))
-                .setNotificationReceivedHandler(new ExampleNotificationReceivedHandler())
-                .init();
 
 
         connectivityDetector = new ConnectivityDetector(getBaseContext());
@@ -979,31 +988,50 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
         showDialog();
 
 
+        OSPermissionSubscriptionState status = OneSignal.getPermissionSubscriptionState();
 
 
 
-        if(ServiciosHttp.registrarUsuarioAPI(getApplicationContext(),usuarioRegistro,emailRegistro,fechaRegistro,claveRegistro, telefonoRegistro)==true)
-        {
+        try {
+            oneSignalToken = String.valueOf(status.getSubscriptionStatus().getUserId());
 
-            Log.d("APILoginTokenRecibido:","Registro Correcto");
+            Log.i("onesignalid",oneSignalToken );
 
 
-            try {
-                ServiciosHttp.loginUsuarioAPI(getApplicationContext(), emailRegistro, claveRegistro, oneSignalToken, Latitud, Longitud, usuarioRegistro,listaEmpresas, RegistroActivity.this);
-                nuevoUsuario();
-                registroBase();
+            if(ServiciosHttp.registrarUsuarioAPI(getApplicationContext(),usuarioRegistro,emailRegistro,fechaRegistro,claveRegistro, telefonoRegistro)==true)
+            {
+
+                Log.d("APILoginTokenRecibido:","Registro Correcto");
+
+
+                try {
+                    ServiciosHttp.loginUsuarioAPI(getApplicationContext(), emailRegistro, claveRegistro, oneSignalToken, Latitud, Longitud, usuarioRegistro,listaEmpresas, RegistroActivity.this);
+                    nuevoUsuario();
+                    registroBase();
+                }
+                catch (Exception ex){
+                    hideDialog();
+                }
+
+
             }
-            catch (Exception ex){
+
+
+            else{
                 hideDialog();
             }
 
 
+
+
         }
-
-
-        else{
+        catch (Exception ex){
+            Toast.makeText(getApplicationContext(), "No se ha logrado obtener token", Toast.LENGTH_SHORT).show();
             hideDialog();
         }
+
+
+
 
 
 
@@ -1115,6 +1143,8 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
 
         mQueue.add(request);
     }
+
+
 
     private void loginFirebase(final String result) {
 

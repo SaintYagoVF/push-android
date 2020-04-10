@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     //SharedPreference
     public static final String MyPREFERENCES = "MyPrefs" ;
     public static final String Nombre = "nombreKey";
+    public static final String Token = "tokenKey";
 
 
     SharedPreferences sharedpreferences;
@@ -172,6 +173,11 @@ public class MainActivity extends AppCompatActivity {
      */
 
 
+
+    public String getValuePreference(){
+
+        return sharedpreferences.getString(Token,"");
+    }
 
 
 

@@ -8,23 +8,23 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:background="@color/fondo"
-        android:padding="10dp"
-        android:text="Push Abiertos"
-        android:textAlignment="center"
-        android:textColor="@color/negro"
-        android:textSize="18sp"
-        android:visibility="invisible" />
+    <!-- <TextView
+         android:id="@+id/textView2"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_margin="20dp"
+         android:background="@color/fondo"
+         android:padding="10dp"
+         android:text="Push Abiertos"
+         android:textAlignment="center"
+         android:textColor="@color/negro"
+         android:textSize="18sp"
+         android:visibility="invisible" /> -->
 
-    <ListView
-        android:id="@+id/bandejaListView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp" />
-</LinearLayout>
+     <ListView
+         android:id="@+id/bandejaListView"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         tools:layout_editor_absoluteX="8dp"
+         tools:layout_editor_absoluteY="8dp" />
+ </LinearLayout>

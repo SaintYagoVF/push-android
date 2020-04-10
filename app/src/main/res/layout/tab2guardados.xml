@@ -9,6 +9,7 @@
     android:tag="guardados_tag"
     tools:context=".MainActivity">
 
+    <!--
     <TextView
         android:id="@+id/textViewG"
         android:layout_width="match_parent"
@@ -20,7 +21,7 @@
         android:textAlignment="center"
         android:textColor="@color/negro"
         android:textSize="18sp"
-        android:visibility="invisible" />
+        android:visibility="invisible" /> -->
 
     <ListView
         android:id="@+id/guardadoListView"

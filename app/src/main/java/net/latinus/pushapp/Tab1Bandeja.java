@@ -1,7 +1,10 @@
 package net.latinus.pushapp;
 
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -19,12 +22,28 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
 import net.latinus.pushapp.Entidades.Bandeja;
+import net.latinus.pushapp.Entidades.Empresas;
 import net.latinus.pushapp.Utilidades.Utilidades;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.android.volley.VolleyLog.TAG;
 
 
 public class Tab1Bandeja extends Fragment{
@@ -60,6 +79,19 @@ public class Tab1Bandeja extends Fragment{
     //Info
    String[] infoArray;
 
+   //SharedPreferences
+
+    //SharedPreference
+    public static final String MyPREFERENCES = "MyPrefs" ;
+
+    public static final String Token = "tokenKey";
+
+    public static final String Registrado = "registradoKey";
+    public static final String IdEmpresa = "idEmpresaKey";
+    public static final String NombreEmpresa = "nombreEmpresaKey";
+
+    static SharedPreferences sharedpreferences;
+
 
 
     @Override
@@ -70,8 +102,13 @@ public class Tab1Bandeja extends Fragment{
         listViewBandeja= (ListView) rootView.findViewById(R.id.bandejaListView);
         conn=new ConexionSQLiteHelper(getActivity().getApplicationContext(),"bd_usuarios",null,1);
 
+        sincronizarMensajes();
 
-        llenarCamposListView();
+
+        //SharedPreferences
+
+        sharedpreferences = getContext().getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+
 
 
 
@@ -79,7 +116,7 @@ public class Tab1Bandeja extends Fragment{
         listViewBandeja.setAdapter(adaptador);
         */
 
-
+        llenarCamposListView();
 
         CustomListAdapter whatever = new CustomListAdapter(getActivity(), dateArray,nameArray, infoArray, imageIDarray);
         listViewBandeja.setAdapter(whatever);
@@ -182,6 +219,21 @@ public class Tab1Bandeja extends Fragment{
 
         try {
 
+            /*
+            SQLiteDatabase db1=conn.getWritableDatabase();
+
+            try {
+                db1.execSQL("delete from " + Utilidades.TABLA_BANDEJA);
+            }
+            catch (SQLiteException e){
+                if (e.getMessage().contains("no such table")){
+
+                    //Toast.makeText(getApplicationContext(), "No existen Datos de Clientes", Toast.LENGTH_LONG).show();
+                }
+            }
+            db1.close();
+            */
+
             SQLiteDatabase db = conn.getReadableDatabase();
 
             Bandeja usuario = null;
@@ -200,12 +252,18 @@ public class Tab1Bandeja extends Fragment{
                 usuario.setUrlBandeja(cursor.getString(6));
 
 
-                Log.d("Título Push:", usuario.getTituloBandeja());
-                Log.d("Contenido Push:", usuario.getContenidoBandeja());
-                Log.d("Fecha Push:", usuario.getFechaBandeja());
-                Log.d("Data Push:", usuario.getDataBandeja());
-                Log.d("ImagenPush:", usuario.getImagenBandeja());
-                Log.d("UrlPush:", usuario.getUrlBandeja());
+                try{
+                    Log.d("Título Push:", usuario.getTituloBandeja());
+                    Log.d("Contenido Push:", usuario.getContenidoBandeja());
+                    Log.d("Fecha Push:", usuario.getFechaBandeja());
+                    Log.d("Data Push:", usuario.getDataBandeja());
+                    Log.d("ImagenPush:", usuario.getImagenBandeja());
+                    Log.d("UrlPush:", usuario.getUrlBandeja());
+                }
+                catch(Exception ex){
+
+                }
+
 
 
 
@@ -228,6 +286,9 @@ public class Tab1Bandeja extends Fragment{
             }
             obtenerLista();
 
+            db.close();
+
+
         }
         catch (SQLiteException e){
             if (e.getMessage().contains("no such table")){
@@ -235,6 +296,10 @@ public class Tab1Bandeja extends Fragment{
                 Toast.makeText(getActivity().getApplicationContext(), "No existen notificaciones todavía", Toast.LENGTH_LONG).show();
             }
         }
+
+        CustomListAdapter whatever = new CustomListAdapter(getActivity(), dateArray,nameArray, infoArray, imageIDarray);
+        listViewBandeja.setAdapter(whatever);
+
     }
 
     private void obtenerLista() {
@@ -259,4 +324,172 @@ public class Tab1Bandeja extends Fragment{
 
 
     }
+
+    public void sincronizarMensajes(){
+
+
+
+
+        String url = "http://192.168.100.25:8080/api/movil/obtenerMensajesPush";
+
+
+        RequestQueue queue = Volley.newRequestQueue(getActivity().getApplicationContext());
+
+        //final String token=sharedpreferences.getString(Token,"");
+
+        String token = ((MainActivity)getActivity()).getValuePreference();
+
+        Map<String, Object> postParam= new HashMap<String, Object>();
+
+        postParam.put("authHeader",token);
+
+
+
+
+        final JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                url, new JSONObject(postParam),
+                new Response.Listener<JSONObject>() {
+
+
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+
+                        try {
+
+
+                            JSONArray jsonArray = response.getJSONArray("pushRespuesta");
+
+                            if (jsonArray.length()==0){
+                                Toast.makeText(getActivity().getApplicationContext(), "No has recibido promociones por el momento", Toast.LENGTH_SHORT).show();
+                            }else {
+
+
+
+                                for (int i = 0; i < jsonArray.length(); i++) {
+
+                                    JSONObject general = jsonArray.getJSONObject(i);
+
+                                    String tituloMensaje = general.getString("nombreCampania");
+
+                                    Log.d("Mensaje Título:",tituloMensaje);
+
+                                    String contenidoMensaje = general.getString("textoCampania");
+
+                                    Log.d("Mensaje Contenido:",contenidoMensaje);
+
+                                    String imagenMensaje = general.getString("imagenCampania");
+
+                                    Log.d("Mensaje Imagen:",imagenMensaje);
+
+                                    String urlMensaje = general.getString("urlCampania");
+
+                                    Log.d("Mensaje Url:",urlMensaje);
+
+
+
+                                    try {
+
+
+
+
+                                        SQLiteDatabase db = conn.getWritableDatabase();
+
+
+                                        ContentValues values = new ContentValues();
+                                        if(tituloMensaje==null)
+                                            values.put(Utilidades.CAMPO_TITULO_BANDEJA," ");
+                                        else
+                                            values.put(Utilidades.CAMPO_TITULO_BANDEJA, tituloMensaje);
+                                        if(contenidoMensaje==null)
+                                            values.put(Utilidades.CAMPO_CONTENIDO_BANDEJA," ");
+                                        else
+                                            values.put(Utilidades.CAMPO_CONTENIDO_BANDEJA, contenidoMensaje);
+                                       /* if(fechaKey==null)
+                                            values.put(Utilidades.CAMPO_FECHA_BANDEJA," ");
+                                        else
+                                            values.put(Utilidades.CAMPO_FECHA_BANDEJA, fechaKey);
+                                        if(dataKey==null)
+                                            values.put(Utilidades.CAMPO_DATA_BANDEJA," ");
+                                        else
+                                            values.put(Utilidades.CAMPO_DATA_BANDEJA, dataKey);
+                                            */
+                                        if(imagenMensaje==null)
+                                            values.put(Utilidades.CAMPO_IMAGEN_BANDEJA," ");
+                                        else
+                                            values.put(Utilidades.CAMPO_IMAGEN_BANDEJA, imagenMensaje);
+
+                                        if(urlMensaje==null)
+                                            values.put(Utilidades.CAMPO_URL_BANDEJA," ");
+                                        else
+                                            values.put(Utilidades.CAMPO_URL_BANDEJA, urlMensaje);
+
+
+
+                                        db.insert(Utilidades.TABLA_BANDEJA, Utilidades.CAMPO_ID_TABLA_BANDEJA, values);
+
+                                        db.close();
+
+
+
+
+
+                                    }
+                                    catch (Exception ex){
+                                        Toast.makeText(getActivity().getApplicationContext(), "Error al guardar Push", Toast.LENGTH_LONG).show();
+
+
+
+                                    }
+
+
+
+                                }
+
+
+
+
+                            }
+
+                            llenarCamposListView();
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //hideDialog();
+                VolleyLog.d(TAG, "ErrorenMMensajes: " + error.getMessage());
+
+
+
+                Toast.makeText(getActivity().getApplicationContext(),"ErrorMensajes : "+error.getMessage(),  Toast.LENGTH_LONG).show();
+            }
+        }) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+
+
+                String token=sharedpreferences.getString(Token,"");
+
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer "+token);
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+        };
+
+        jsonObjReq.setTag(TAG);
+        queue.add(jsonObjReq);
+    }
+
 }
