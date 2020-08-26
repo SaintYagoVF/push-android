@@ -191,7 +191,7 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
                 .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
                 .unsubscribeWhenNotificationsAreDisabled(true)
                 .setNotificationOpenedHandler(new ExampleNotificationOpenedHandler(getApplicationContext()))
-                .setNotificationReceivedHandler(new ExampleNotificationReceivedHandler())
+                .setNotificationReceivedHandler(new ExampleNotificationReceivedHandler(getApplicationContext(),RegistroActivity.this))
                 .init();
 
 

@@ -43,10 +43,9 @@ public class ExampleNotificationOpenedHandler extends AppCompatActivity implemen
     @Override
     public void notificationOpened(OSNotificationOpenResult result) {
 
+
+
         conn=new ConexionSQLiteHelper(mContext,"bd_usuarios",null,1);
-
-
-
 
         OSNotificationAction.ActionType actionType = result.action.type;
         JSONObject data = result.notification.payload.additionalData;
@@ -58,7 +57,7 @@ public class ExampleNotificationOpenedHandler extends AppCompatActivity implemen
 
         String bigPicture = result.notification.payload.bigPicture;
 
-
+/*
         Log.i("OneSignalExample", "Título : " + title);
 
         Log.i("OneSignalExample", "Datos: " + body);
@@ -67,6 +66,9 @@ public class ExampleNotificationOpenedHandler extends AppCompatActivity implemen
 
 
         Log.i("OneSignalExample", "URL: " + launchUrl);
+
+
+ */
 
         String fechaKey = "";
         String dataKey = null;

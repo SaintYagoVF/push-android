@@ -39,9 +39,11 @@ import java.util.ArrayList;
 //onesignal
 
 
+import com.onesignal.OSNotification;
 import com.onesignal.OSPermissionSubscriptionState;
 import com.onesignal.OneSignal;
 
+import org.json.JSONObject;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -93,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
                 .unsubscribeWhenNotificationsAreDisabled(true)
                 .setNotificationOpenedHandler(new ExampleNotificationOpenedHandler(getApplicationContext()))
-                .setNotificationReceivedHandler(new ExampleNotificationReceivedHandler())
+                .setNotificationReceivedHandler(new ExampleNotificationReceivedHandler(getApplicationContext(),MainActivity.this))
                 .init();
 
         //Tabs divide pantalla
@@ -161,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-   /*  @Override
+     @Override
     public void onRestart() {
         super.onRestart();
         //When BACK BUTTON is pressed, the activity on the stack is restarted
@@ -169,8 +171,8 @@ public class MainActivity extends AppCompatActivity {
         finish();
         startActivity(getIntent());
 
-    }
-     */
+
+         }
 
 
 
@@ -295,5 +297,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 }
+
 
 

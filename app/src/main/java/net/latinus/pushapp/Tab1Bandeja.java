@@ -215,7 +215,7 @@ public class Tab1Bandeja extends Fragment{
     }
 
 
-    private void llenarCamposListView() {
+    public void llenarCamposListView() {
 
         try {
 

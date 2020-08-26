@@ -100,7 +100,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
                 .unsubscribeWhenNotificationsAreDisabled(true)
                 .setNotificationOpenedHandler(new ExampleNotificationOpenedHandler(getApplicationContext()))
-                .setNotificationReceivedHandler(new ExampleNotificationReceivedHandler())
+                .setNotificationReceivedHandler(new ExampleNotificationReceivedHandler(getApplicationContext(),LoginActivity.this))
                 .init();
 
 
