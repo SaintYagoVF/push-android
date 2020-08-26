@@ -1056,7 +1056,9 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
 
 
 
-        String url = "http://192.168.100.25:8080/api/movil/obtenerTodasLasEmpresas";
+       // String url = "http://192.168.100.25:8080/api/movil/obtenerTodasLasEmpresas";
+
+        String url = "https://firmadigitaldesa.latinus.net/microservices-push-movil/api/movil/obtenerTodasLasEmpresas";
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -1139,7 +1141,16 @@ public class RegistroActivity extends AppCompatActivity implements GoogleApiClie
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
             }
-        });
+        }){
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Accept", "application/json");
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+        };
 
         mQueue.add(request);
     }

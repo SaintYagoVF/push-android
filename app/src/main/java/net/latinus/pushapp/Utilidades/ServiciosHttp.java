@@ -135,7 +135,8 @@ public class ServiciosHttp {
 
 
 
-        String url = "http://192.168.100.25:8080/api/auth/registrar";
+        //String url = "http://192.168.100.25:8080/api/auth/registrar";
+       String url= "https://firmadigitaldesa.latinus.net/microservices-push-movil/api/auth/registrar";
 
         String[] rol = {"ROLE_MOVIL_PUSH"};
 
@@ -257,8 +258,8 @@ public class ServiciosHttp {
 
         final String[] token = {""};
 
-        String url = "http://192.168.100.25:8080/api/auth/login";
-
+       // String url = "http://192.168.100.25:8080/api/auth/login";
+        String url = "https://firmadigitaldesa.latinus.net/microservices-push-movil/api/auth/login";
 
 
 
@@ -378,16 +379,7 @@ public class ServiciosHttp {
 
 
             }
-        }) {
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Accept", "application/json");
-                headers.put("Content-Type", "application/json");
-                return headers;
-            }
-        };
+        });
 
         jsonObjReq.setTag(TAG);
         queue.add(jsonObjReq);
@@ -404,8 +396,8 @@ public class ServiciosHttp {
 
 
 
-        String url = "http://192.168.100.25:8080/api/movil/actualizarTokenOneSignal";
-
+        //String url = "http://192.168.100.25:8080/api/movil/actualizarTokenOneSignal";
+        String url = "https://firmadigitaldesa.latinus.net/microservices-push-movil/api/movil/actualizarTokenOneSignal";
 
 
 
@@ -514,7 +506,9 @@ public class ServiciosHttp {
 
 
 
-        String url = "http://192.168.100.25:8080/api/movil/agregarUbicacionMovil";
+        //String url = "http://192.168.100.25:8080/api/movil/agregarUbicacionMovil";
+
+        String url = "https://firmadigitaldesa.latinus.net/microservices-push-movil/api/movil/agregarUbicacionMovil";
 
         RequestQueue queue = Volley.newRequestQueue(context);
 
@@ -645,7 +639,9 @@ public class ServiciosHttp {
         for(int i=0; i<listaEmpresas.size();i++){
 
 
-        String url = "http://192.168.100.25:8080/api/movil/subscribirEmpresa";
+        //String url = "http://192.168.100.25:8080/api/movil/subscribirEmpresa";
+
+            String url = "https://firmadigitaldesa.latinus.net/microservices-push-movil/api/movil/subscribirEmpresa";
 
         RequestQueue queue = Volley.newRequestQueue(context);
         //Integer idEmpresa=sharedpreferences.getInt(IdEmpresa,0);
@@ -738,7 +734,7 @@ public class ServiciosHttp {
 
                                 Toast.makeText(context, "¡Registro Exitoso!", Toast.LENGTH_LONG).show();
 
-                                activity.finish();
+                                //activity.finish();
 
                                 activity.startActivity(new Intent(activity, MainActivity.class));
 
@@ -816,7 +812,9 @@ public class ServiciosHttp {
 
 
 
-        String url = "http://192.168.100.25:8080/api/movil/subscribirEmpresa";
+        //String url = "http://192.168.100.25:8080/api/movil/subscribirEmpresa";
+
+        String url = "https://firmadigitaldesa.latinus.net/microservices-push-movil/api/movil/subscribirEmpresa";
 
         RequestQueue queue = Volley.newRequestQueue(context);
 
@@ -982,7 +980,9 @@ public class ServiciosHttp {
 
 
 
-        String url = "http://192.168.100.25:8080/api/movil/obtenerEmpresas";
+        //String url = "http://192.168.100.25:8080/api/movil/obtenerEmpresas";
+
+        String url = "https://firmadigitaldesa.latinus.net/microservices-push-movil/obtenerEmpresas";
 
         RequestQueue queue = Volley.newRequestQueue(context);
 
@@ -1094,7 +1094,9 @@ public class ServiciosHttp {
 
 
 
-        String url = "http://192.168.100.25:8080/api/movil/desvincularEmpresa";
+        //String url = "http://192.168.100.25:8080/api/movil/desvincularEmpresa";
+
+        String url = "https://firmadigitaldesa.latinus.net/microservices-push-movil/api/movil/desvincularEmpresa";
 
         RequestQueue queue = Volley.newRequestQueue(context);
 

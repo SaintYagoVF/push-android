@@ -330,14 +330,15 @@ public class Tab1Bandeja extends Fragment{
 
 
 
-        String url = "http://192.168.100.25:8080/api/movil/obtenerMensajesPush";
-
+        //String url = "http://192.168.100.25:8080/api/movil/obtenerMensajesPush";
+        String url = "https://firmadigitaldesa.latinus.net/microservices-push-movil/api/movil/obtenerMensajesPush";
 
         RequestQueue queue = Volley.newRequestQueue(getActivity().getApplicationContext());
 
         //final String token=sharedpreferences.getString(Token,"");
 
         String token = ((MainActivity)getActivity()).getValuePreference();
+        Log.d("tokenPush: ",token);
 
         Map<String, Object> postParam= new HashMap<String, Object>();
 
