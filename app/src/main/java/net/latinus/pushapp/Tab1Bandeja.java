@@ -244,15 +244,17 @@ public class Tab1Bandeja extends Fragment{
             while (cursor.moveToNext()) {
                 usuario = new Bandeja();
                 usuario.setIdBandeja(cursor.getInt(0));
-                usuario.setTituloBandeja(cursor.getString(1));
-                usuario.setContenidoBandeja(cursor.getString(2));
-                usuario.setFechaBandeja(cursor.getString(3));
-                usuario.setDataBandeja(cursor.getString(4));
-                usuario.setImagenBandeja(cursor.getString(5));
-                usuario.setUrlBandeja(cursor.getString(6));
+                usuario.setIdextBandeja(cursor.getString(1));
+                usuario.setTituloBandeja(cursor.getString(2));
+                usuario.setContenidoBandeja(cursor.getString(3));
+                usuario.setFechaBandeja(cursor.getString(4));
+                usuario.setDataBandeja(cursor.getString(5));
+                usuario.setImagenBandeja(cursor.getString(6));
+                usuario.setUrlBandeja(cursor.getString(7));
 
 
                 try{
+                    Log.d("ID externo Push:", usuario.getIdextBandeja());
                     Log.d("Título Push:", usuario.getTituloBandeja());
                     Log.d("Contenido Push:", usuario.getContenidoBandeja());
                     Log.d("Fecha Push:", usuario.getFechaBandeja());
@@ -372,6 +374,10 @@ public class Tab1Bandeja extends Fragment{
 
                                     JSONObject general = jsonArray.getJSONObject(i);
 
+                                    String idMensaje = general.getString("id");
+
+                                    Log.d("Mensaje Id:",idMensaje);
+
                                     String tituloMensaje = general.getString("nombreCampania");
 
                                     Log.d("Mensaje Título:",tituloMensaje);
@@ -392,13 +398,37 @@ public class Tab1Bandeja extends Fragment{
 
                                     try {
 
+                                        boolean existePush=false;
+
+                                        SQLiteDatabase db2 = conn.getReadableDatabase();
+
+
+                                        Cursor cursor = db2.rawQuery("SELECT * FROM " + Utilidades.TABLA_BANDEJA, null);
+
+                                        while (cursor.moveToNext()) {
+
+                                           if(idMensaje.equals(cursor.getString(1)))
+                                               existePush=true;
+
+                                        }
+
+                                        db2.close();
+
+                                        if(existePush==true)
+                                            continue;
+
 
 
 
                                         SQLiteDatabase db = conn.getWritableDatabase();
 
-
                                         ContentValues values = new ContentValues();
+
+                                        if(idMensaje==null)
+                                            values.put(Utilidades.CAMPO_ID_TABLAEXTERNA_BANDEJA," ");
+                                        else
+                                            values.put(Utilidades.CAMPO_ID_TABLAEXTERNA_BANDEJA, idMensaje);
+
                                         if(tituloMensaje==null)
                                             values.put(Utilidades.CAMPO_TITULO_BANDEJA," ");
                                         else

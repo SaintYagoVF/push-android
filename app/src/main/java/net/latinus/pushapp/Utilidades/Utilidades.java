@@ -38,6 +38,7 @@ public class Utilidades {
     //Constantes campos tabla bandeja
     public static final String TABLA_BANDEJA="bandeja";
     public static final String CAMPO_ID_TABLA_BANDEJA="idtab_bandeja";
+    public static final String CAMPO_ID_TABLAEXTERNA_BANDEJA="idtabext_bandeja";
     public static final String CAMPO_TITULO_BANDEJA="titulo_bandeja";
     public static final String CAMPO_CONTENIDO_BANDEJA="contenido_bandeja";
     public static final String CAMPO_FECHA_BANDEJA="fecha_bandeja";
@@ -48,7 +49,7 @@ public class Utilidades {
 
     public static final String CREAR_TABLA_BANDEJA="CREATE TABLE " +
             ""+TABLA_BANDEJA+" ("+CAMPO_ID_TABLA_BANDEJA+" INTEGER PRIMARY KEY AUTOINCREMENT, "
-            +CAMPO_TITULO_BANDEJA+" TEXT,"+CAMPO_CONTENIDO_BANDEJA+" TEXT,"+CAMPO_FECHA_BANDEJA+" TEXT,"+CAMPO_DATA_BANDEJA+" TEXT,"+CAMPO_IMAGEN_BANDEJA+" TEXT,"+CAMPO_URL_BANDEJA+" TEXT)";
+            +CAMPO_ID_TABLAEXTERNA_BANDEJA+" TEXT,"+CAMPO_TITULO_BANDEJA+" TEXT,"+CAMPO_CONTENIDO_BANDEJA+" TEXT,"+CAMPO_FECHA_BANDEJA+" TEXT,"+CAMPO_DATA_BANDEJA+" TEXT,"+CAMPO_IMAGEN_BANDEJA+" TEXT,"+CAMPO_URL_BANDEJA+" TEXT)";
 
 
     //Constantes campos tabla guardados

@@ -6,6 +6,9 @@ public class Bandeja implements Serializable {
 
     private Integer idBandeja;
 
+
+
+    private String idextBandeja;
     private String tituloBandeja;
     private String contenidoBandeja;
 
@@ -21,8 +24,9 @@ public class Bandeja implements Serializable {
     public Bandeja() {
     }
 
-    public Bandeja(Integer idBandeja, String tituloBandeja, String contenidoBandeja, String fechaBandeja,  String dataBandeja, String imagenBandeja, String urlBandeja) {
+    public Bandeja(Integer idBandeja, String idextBandeja, String tituloBandeja, String contenidoBandeja, String fechaBandeja,  String dataBandeja, String imagenBandeja, String urlBandeja) {
         this.idBandeja = idBandeja;
+        this.idextBandeja=idextBandeja;
         this.tituloBandeja = tituloBandeja;
         this.contenidoBandeja = contenidoBandeja;
         this.fechaBandeja = fechaBandeja;
@@ -37,6 +41,14 @@ public class Bandeja implements Serializable {
 
     public void setIdBandeja(Integer idBandeja) {
         this.idBandeja = idBandeja;
+    }
+
+    public String getIdextBandeja() {
+        return idextBandeja;
+    }
+
+    public void setIdextBandeja(String idextBandeja) {
+        this.idextBandeja = idextBandeja;
     }
 
     public String getTituloBandeja() {
